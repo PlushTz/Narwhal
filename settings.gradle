@@ -21,3 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "Narwhal"
 include ':app'
+include ':aptutils'
+include ':annotations'
+include ':complier'
+include ':runtime'
