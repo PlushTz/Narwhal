@@ -3,8 +3,13 @@ package com.eetrust.complier.activity.mothod
 import com.eetrust.complier.activity.ActivityClass
 import com.eetrust.complier.activity.ActivityClassBuilder
 import com.eetrust.complier.activity.entity.OptionalField
+import com.eetrust.complier.prebuilt.INTENT
+import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
 import java.util.Locale
+import javax.lang.model.element.Modifier
 
 /**
  * Desc:
@@ -38,6 +43,33 @@ class StartMethodBuilder(private val activityClass: ActivityClass) {
                         it.addFiled(field)
                     }.build(typeBuilder)
             }
+        } else {
+            val builderName = activityClass.simpleName + ActivityClassBuilder.POSIX
+            val fillIntentMethodBuilder = MethodSpec.methodBuilder("fillIntent")
+                .addModifiers(Modifier.PRIVATE)
+                .addParameter(INTENT.java,"intent")
+            val buildClassName = ClassName.get(activityClass.packageName, builderName)
+            optionalFields.forEach { field ->
+                typeBuilder.addField(FieldSpec.builder(field.asJavaTypeName(),field.name, Modifier.PRIVATE).build())
+                typeBuilder.addMethod(MethodSpec.methodBuilder(field.name)
+                    .addModifiers(Modifier.PUBLIC)
+                    .addParameter(field.asJavaTypeName(),field.name)
+                    .addStatement("this.${field.name} = ${field.name}")
+                    .addStatement("return this")
+                    .returns(buildClassName)
+                    .build())
+                if (field.isPrimitive) {
+                    fillIntentMethodBuilder.addStatement("intent.putExtra(\$S,\$L)", field.name, field.name)
+                } else {
+                    fillIntentMethodBuilder.beginControlFlow("if (\$L != null)", field.name)
+                        .addStatement("intent.putExtra(\$S,\$L)", field.name, field.name)
+                        .endControlFlow()
+                }
+            }
+            typeBuilder.addMethod(fillIntentMethodBuilder.build())
+            startMethodNoOptional.copy(ActivityClassBuilder.METHOD_NAME_FOR_OPTIONALS)
+                .staticMethod(false)
+                .build(typeBuilder)
         }
     }
 }

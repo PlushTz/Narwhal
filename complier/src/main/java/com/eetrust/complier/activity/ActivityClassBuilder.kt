@@ -2,6 +2,8 @@ package com.eetrust.complier.activity
 
 import com.eetrust.aptutils.logger.Logger
 import com.eetrust.complier.activity.mothod.ConstantBuilder
+import com.eetrust.complier.activity.mothod.InjectMethodBuilder
+import com.eetrust.complier.activity.mothod.SaveStateMethodBuilder
 import com.eetrust.complier.activity.mothod.StartMethodBuilder
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.TypeSpec
@@ -28,6 +30,8 @@ class ActivityClassBuilder(private val activityClass: ActivityClass) {
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
         ConstantBuilder(activityClass).build(typeBuilder)
         StartMethodBuilder(activityClass).build(typeBuilder)
+        InjectMethodBuilder(activityClass).build(typeBuilder)
+        SaveStateMethodBuilder(activityClass).build(typeBuilder)
         writeJavaToFile(filer, typeBuilder.build())
     }
 
