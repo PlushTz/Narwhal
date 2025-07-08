@@ -1,8 +1,9 @@
 package com.eetrust.complier.activity.mothod
 
-import com.eetrust.complier.activity.ActivityClass
 import com.eetrust.complier.activity.ActivityClassBuilder
 import com.eetrust.complier.activity.entity.OptionalField
+import com.eetrust.complier.base.BasicClass
+import com.eetrust.complier.base.MethodBuilder
 import com.eetrust.complier.prebuilt.INTENT
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
@@ -17,11 +18,11 @@ import javax.lang.model.element.Modifier
  * Created on 2025/7/5
  * Email: tao351992257@gmail.com
  */
-class StartMethodBuilder(private val activityClass: ActivityClass) {
+class StartMethodBuilder(basicClass: BasicClass) : MethodBuilder(basicClass) {
 
-    fun build(typeBuilder: TypeSpec.Builder) {
-        val startMethod = StartMethod(activityClass, ActivityClassBuilder.METHOD_NAME)
-        val groupFields = activityClass.fields.groupBy { it is OptionalField }
+    override fun build(typeBuilder: TypeSpec.Builder) {
+        val startMethod = StartMethod(basicClass, ActivityClassBuilder.METHOD_NAME)
+        val groupFields = basicClass.fields.groupBy { it is OptionalField }
         val requiredFields = groupFields[false] ?: emptyList()
         val optionalFields = groupFields[true] ?: emptyList()
 
@@ -41,19 +42,21 @@ class StartMethodBuilder(private val activityClass: ActivityClass) {
                 startMethodNoOptional.copy(ActivityClassBuilder.METHOD_NAME_FOR_OPTIONAL + field.name.capitalize(Locale.ROOT))
                     .also {
                         it.addFiled(field)
-                    }.build(typeBuilder)
+                    }
+                    .build(typeBuilder)
             }
         } else {
-            val builderName = activityClass.simpleName + ActivityClassBuilder.POSIX
+            val builderName = basicClass.simpleName + ActivityClassBuilder.POSIX
             val fillIntentMethodBuilder = MethodSpec.methodBuilder("fillIntent")
                 .addModifiers(Modifier.PRIVATE)
-                .addParameter(INTENT.java,"intent")
-            val buildClassName = ClassName.get(activityClass.packageName, builderName)
+                .addParameter(INTENT.java, "intent")
+            val buildClassName = ClassName.get(basicClass.packageName, builderName)
             optionalFields.forEach { field ->
-                typeBuilder.addField(FieldSpec.builder(field.asJavaTypeName(),field.name, Modifier.PRIVATE).build())
+                typeBuilder.addField(FieldSpec.builder(field.asJavaTypeName(), field.name, Modifier.PRIVATE)
+                    .build())
                 typeBuilder.addMethod(MethodSpec.methodBuilder(field.name)
                     .addModifiers(Modifier.PUBLIC)
-                    .addParameter(field.asJavaTypeName(),field.name)
+                    .addParameter(field.asJavaTypeName(), field.name)
                     .addStatement("this.${field.name} = ${field.name}")
                     .addStatement("return this")
                     .returns(buildClassName)

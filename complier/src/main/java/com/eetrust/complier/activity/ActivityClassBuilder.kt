@@ -1,6 +1,5 @@
 package com.eetrust.complier.activity
 
-import com.eetrust.aptutils.logger.Logger
 import com.eetrust.complier.activity.mothod.ConstantBuilder
 import com.eetrust.complier.activity.mothod.InjectMethodBuilder
 import com.eetrust.complier.activity.mothod.SaveStateMethodBuilder

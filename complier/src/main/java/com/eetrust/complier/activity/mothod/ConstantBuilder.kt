@@ -1,6 +1,7 @@
 package com.eetrust.complier.activity.mothod
 
-import com.eetrust.complier.activity.ActivityClass
+import com.eetrust.complier.base.BasicClass
+import com.eetrust.complier.base.MethodBuilder
 import com.eetrust.complier.utils.camelToUnderline
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.TypeName
@@ -13,10 +14,11 @@ import javax.lang.model.element.Modifier
  * Created on 2025/7/5
  * Email: tao351992257@gmail.com
  */
-class ConstantBuilder(private val activityClass: ActivityClass) {
-    fun build(typeBuilder: TypeSpec.Builder) {
-        activityClass.fields.forEach { field ->
-            val name = field.prefix + field.name.camelToUnderline().uppercase()
+class ConstantBuilder(basicClass: BasicClass) : MethodBuilder(basicClass) {
+    override fun build(typeBuilder: TypeSpec.Builder) {
+        basicClass.fields.forEach { field ->
+            val name = field.prefix + field.name.camelToUnderline()
+                .uppercase()
             // 1. 对于类型，直接使用 JavaPoet 的 TypeName 获取方式
             val fieldType = TypeName.get(String::class.java) // 或者其他需要的类型
 

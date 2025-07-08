@@ -1,7 +1,7 @@
 package com.eetrust.complier.activity.mothod
 
-import com.eetrust.complier.activity.ActivityClass
-import com.eetrust.complier.activity.entity.Field
+import com.eetrust.complier.base.BasicClass
+import com.eetrust.complier.base.MethodBuilder
 import com.eetrust.complier.prebuilt.ACTIVITY_BUILDER
 import com.eetrust.complier.prebuilt.CONTEXT
 import com.eetrust.complier.prebuilt.INTENT
@@ -16,33 +16,18 @@ import javax.lang.model.element.Modifier
  * Created on 2025/7/5
  * Email: tao351992257@gmail.com
  */
-class StartMethod(private val activityClass: ActivityClass, private val name: String) {
-    private val fields = ArrayList<Field>()
-    private var isStaticMethod = true
+class StartMethod(basicClass: BasicClass, private val name: String) : MethodBuilder(basicClass) {
 
-    fun staticMethod(staticMethod: Boolean): StartMethod {
-        this.isStaticMethod = staticMethod
-        return this
-    }
-
-    fun addAllFields(fields: List<Field>) {
-        this.fields.addAll(fields)
-    }
-
-    fun addFiled(field: Field) {
-        this.fields.add(field)
-    }
-
-    fun copy(name: String) = StartMethod(activityClass, name).also {
+    fun copy(name: String) = StartMethod(basicClass, name).also {
         it.addAllFields(fields)
     }
 
-    fun build(typeBuilder: TypeSpec.Builder) {
+    override fun build(typeBuilder: TypeSpec.Builder) {
         val methodBuilder = MethodSpec.methodBuilder(name)
             .addModifiers(Modifier.PUBLIC)
             .returns(TypeName.VOID)
             .addParameter(CONTEXT.java, "context")
-        methodBuilder.addStatement("\$T intent = new \$T(context, \$T.class)", INTENT.java, INTENT.java, activityClass.typeElement)
+        methodBuilder.addStatement("\$T intent = new \$T(context, \$T.class)", INTENT.java, INTENT.java, basicClass.typeElement)
         fields.forEach { field ->
             val name = field.name
             methodBuilder.addParameter(field.asJavaTypeName(), name)

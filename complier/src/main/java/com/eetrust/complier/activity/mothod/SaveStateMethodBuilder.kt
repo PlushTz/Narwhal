@@ -1,6 +1,8 @@
 package com.eetrust.complier.activity.mothod
 
 import com.eetrust.complier.activity.ActivityClass
+import com.eetrust.complier.base.BasicClass
+import com.eetrust.complier.base.MethodBuilder
 import com.eetrust.complier.prebuilt.ACTIVITY
 import com.eetrust.complier.prebuilt.BUNDLE
 import com.eetrust.complier.prebuilt.INTENT
@@ -15,17 +17,17 @@ import javax.lang.model.element.Modifier
  * Created on 2025/7/7
  * Email: tao351992257@gmail.com
  */
-class SaveStateMethodBuilder(private val activityClass: ActivityClass) {
-    fun build(typeBuilder: TypeSpec.Builder) {
+class SaveStateMethodBuilder(basicClass: BasicClass) : MethodBuilder(basicClass) {
+    override fun build(typeBuilder: TypeSpec.Builder) {
         val methodBuilder = MethodSpec.methodBuilder("saveState")
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
             .returns(TypeName.VOID)
-            .addParameter(ACTIVITY.java,"instance")
-            .addParameter(BUNDLE.java,"outState")
-            .beginControlFlow("if (instance instanceof \$T)", activityClass.typeElement)
-            .addStatement("\$T typeInstance = (\$T) instance", activityClass.typeElement, activityClass.typeElement)
+            .addParameter(ACTIVITY.java, "instance")
+            .addParameter(BUNDLE.java, "outState")
+            .beginControlFlow("if (instance instanceof \$T)", basicClass.typeElement)
+            .addStatement("\$T typeInstance = (\$T) instance", basicClass.typeElement, basicClass.typeElement)
             .addStatement("\$T intent = new \$T()", INTENT.java, INTENT.java)
-        activityClass.fields.forEach { field ->
+        basicClass.fields.forEach { field ->
             val name = field.name
             if (field.isPrivate) {
                 methodBuilder.addStatement("intent.putExtra(\$S, typeInstance.get\$L())", name, name.capitalize())
@@ -34,7 +36,8 @@ class SaveStateMethodBuilder(private val activityClass: ActivityClass) {
             }
         }
 
-        methodBuilder.addStatement("outState.putAll(intent.getExtras())").endControlFlow()
+        methodBuilder.addStatement("outState.putAll(intent.getExtras())")
+            .endControlFlow()
         typeBuilder.addMethod(methodBuilder.build())
     }
 }

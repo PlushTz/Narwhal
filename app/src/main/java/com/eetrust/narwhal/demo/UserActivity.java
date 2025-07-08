@@ -24,6 +24,7 @@ public class UserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UserActivityBuilder.inject(this, savedInstanceState);
         Log.d("TAG", "onCreate: name = " + name);
     }
 }
