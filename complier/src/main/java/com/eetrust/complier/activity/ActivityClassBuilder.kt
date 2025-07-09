@@ -3,11 +3,14 @@ package com.eetrust.complier.activity
 import com.eetrust.complier.activity.mothod.ConstantBuilder
 import com.eetrust.complier.activity.mothod.InjectMethodBuilder
 import com.eetrust.complier.activity.mothod.SaveStateMethodBuilder
+import com.eetrust.complier.activity.mothod.StartKotlinFunctionBuilder
 import com.eetrust.complier.activity.mothod.StartMethodBuilder
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.TypeSpec
+import com.squareup.kotlinpoet.FileSpec
 import javax.annotation.processing.Filer
 import javax.lang.model.element.Modifier
+import javax.tools.StandardLocation
 
 /**
  * Desc:
@@ -31,7 +34,21 @@ class ActivityClassBuilder(private val activityClass: ActivityClass) {
         StartMethodBuilder(activityClass).build(typeBuilder)
         InjectMethodBuilder(activityClass).build(typeBuilder)
         SaveStateMethodBuilder(activityClass).build(typeBuilder)
+        if (activityClass.isKotlin) {
+            StartKotlinFunctionBuilder(activityClass).build(FileSpec.builder(activityClass.packageName, activityClass.simpleName + POSIX))
+        }
         writeJavaToFile(filer, typeBuilder.build())
+    }
+
+    private fun writeKotlinToFile(filer: Filer, fileSpec: FileSpec) {
+        val fileObject = filer.createResource(StandardLocation.SOURCE_OUTPUT, activityClass.packageName, fileSpec.name + ".kt")
+        try {
+            fileObject.openWriter()
+                .also(fileSpec::writeTo)
+                .close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun writeJavaToFile(filer: Filer, typeSpec: TypeSpec) {

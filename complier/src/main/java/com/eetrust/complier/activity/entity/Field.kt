@@ -1,6 +1,8 @@
 package com.eetrust.complier.activity.entity
 
-import com.squareup.javapoet.ClassName
+import com.eetrust.aptutils.types.asKotlinTypeName
+import com.squareup.javapoet.ClassName as JavaTypeName
+import com.squareup.kotlinpoet.ClassName as KotlinTypeName
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.VariableElement
 import javax.lang.model.type.PrimitiveType
@@ -25,7 +27,8 @@ open class Field(val element: VariableElement) : Comparable<Field> {
         return name.compareTo(other.name)
     }
 
-    fun asJavaTypeName() = ClassName.get(element.asType())
+    fun asJavaTypeName() = JavaTypeName.get(element.asType())
+    open fun asKotlinTypeName() = element.asType().asKotlinTypeName().copy(nullable = true)
 
     override fun toString(): String {
         return "$name:${element.asType()}"

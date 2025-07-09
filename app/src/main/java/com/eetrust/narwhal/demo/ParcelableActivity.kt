@@ -18,7 +18,7 @@ class ParcelableActivity : AppCompatActivity() {
     lateinit var user: User
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ParcelableActivityBuilder.inject(this, savedInstanceState)
+//        ParcelableActivityBuilder.inject(this, savedInstanceState)
         Log.d("TAG", "$user")
     }
 }

@@ -3,6 +3,7 @@ package com.eetrust.complier.activity.entity
 import com.eetrust.annotations.Optional
 import com.eetrust.aptutils.types.asTypeMirror
 import com.eetrust.aptutils.types.isSameTypeWith
+import com.squareup.kotlinpoet.TypeName
 import javax.lang.model.element.VariableElement
 import javax.lang.model.type.TypeKind
 
@@ -39,6 +40,8 @@ class OptionalField(element: VariableElement) : Field(element) {
                 """"${optional.stringValue}""""
         }
     }
+
+    override fun asKotlinTypeName() = super.asKotlinTypeName()
 
     override fun compareTo(other: Field): Int {
         return if (other is OptionalField) {

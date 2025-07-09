@@ -3,7 +3,8 @@ package com.eetrust.aptutils.types
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeName as KotlinTypeName
+import com.squareup.javapoet.TypeName as JavaTypeName
 import javax.lang.model.type.TypeMirror
 
 /**
@@ -22,7 +23,7 @@ class ClassType(
         )
     }
 
-    val java: com.squareup.javapoet.TypeName by lazy {
+    val java: JavaTypeName by lazy {
         if (typeParameterClassTypes.isNotEmpty()) {
             (typeMirror.asJavaTypeName() as? ClassName)?.let {
                 ParameterizedTypeName.get(
@@ -34,7 +35,7 @@ class ClassType(
             typeMirror.asJavaTypeName()
         }
     }
-    val kotlin: TypeName by lazy {
+    val kotlin: KotlinTypeName by lazy {
         if (typeParameterClassTypes.isNotEmpty()) {
             (typeMirror.asKotlinTypeName() as? com.squareup.kotlinpoet.ClassName)?.parameterizedBy(
                 *(Array(

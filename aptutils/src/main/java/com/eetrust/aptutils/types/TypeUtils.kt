@@ -11,7 +11,8 @@ import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.LONG
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.SHORT
-import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeName as KotlinTypeName
+import com.squareup.javapoet.TypeName as JavaTypeName
 import com.squareup.kotlinpoet.asTypeName
 import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
@@ -118,9 +119,9 @@ fun KClass<*>.asElement() = this.asTypeMirror().asElement()
 //region TypeMirror
 fun TypeMirror.asElement() = AptContext.types.asElement(this)
 
-fun TypeMirror.asJavaTypeName() = com.squareup.javapoet.TypeName.get(this)!!
+fun TypeMirror.asJavaTypeName() = JavaTypeName.get(this)!!
 
-fun TypeMirror.asKotlinTypeName(): TypeName {
+fun TypeMirror.asKotlinTypeName(): KotlinTypeName {
     return when (kind) {
         TypeKind.BOOLEAN -> BOOLEAN
         TypeKind.BYTE -> BYTE

@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         binding.btnStart.setOnClickListener {
-            ParcelableActivityBuilder.startWithoutOptional(this, User("jt", 18, '男'))
+//            ParcelableActivityBuilder.startWithoutOptional(this, User("jt", 18, '男'))
 //            UserActivityBuilder.startWithoutOptional(this, "jt")
         }
     }
