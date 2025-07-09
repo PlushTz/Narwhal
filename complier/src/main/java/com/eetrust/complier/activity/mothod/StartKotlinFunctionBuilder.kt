@@ -3,12 +3,9 @@ package com.eetrust.complier.activity.mothod
 import com.eetrust.complier.activity.ActivityClass
 import com.eetrust.complier.activity.ActivityClassBuilder
 import com.eetrust.complier.activity.entity.OptionalField
-import com.eetrust.complier.base.BasicClass
-import com.eetrust.complier.base.MethodBuilder
 import com.eetrust.complier.prebuilt.ACTIVITY_BUILDER
 import com.eetrust.complier.prebuilt.CONTEXT
 import com.eetrust.complier.prebuilt.INTENT
-import com.squareup.javapoet.TypeSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -30,7 +27,7 @@ class StartKotlinFunctionBuilder(private val activityClass: ActivityClass) {
             .receiver(CONTEXT.kotlin)
             .addModifiers(KModifier.PUBLIC)
             .returns(UNIT)
-            .addStatement("val intent = %T(this,%T::class.java)", INTENT.kotlin, activityClass.typeElement)
+            .addStatement("val intent = %T(this, %T::class.java)", INTENT.kotlin, activityClass.typeElement)
 
         activityClass.fields.forEach { field ->
             val fieldName = field.name
@@ -43,10 +40,10 @@ class StartKotlinFunctionBuilder(private val activityClass: ActivityClass) {
                 functionBuilder.addParameter(fieldName, className)
             }
 
-            functionBuilder.addStatement("intent.putExtra(%S,%L)", fieldName, fieldName)
+            functionBuilder.addStatement("intent.putExtra(%S, %L)", fieldName, fieldName)
         }
 
-        functionBuilder.addStatement("%T.INSTANCE.startActivity(this,intent)", ACTIVITY_BUILDER.kotlin)
+        functionBuilder.addStatement("%T.INSTANCE.startActivity(this, intent)", ACTIVITY_BUILDER.kotlin)
         fileBuilder.addFunction(functionBuilder.build())
     }
 

@@ -15,15 +15,8 @@ import com.eetrust.narwhal.demo.databinding.ActivityMainBinding
  * Created on 2025/7/5
  * Email: tao351992257@gmail.com
  */
-@Builder
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
-
-    @Optional
-    lateinit var name: String
-
-    @Optional
-    var result: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +28,12 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        binding.btnStart.setOnClickListener {
-//            ParcelableActivityBuilder.startWithoutOptional(this, User("jt", 18, '男'))
-//            UserActivityBuilder.startWithoutOptional(this, "jt")
+        binding.btnGoToUserActivity.setOnClickListener {
+            UserActivityBuilder.startWithoutOptional(this, "jt")
+        }
+
+        binding.btnGoToParcelableActivity.setOnClickListener {
+            startParcelableActivity(createTime = null, User(name = "cat", age = 1, sex = '母'))
         }
     }
 }

@@ -35,7 +35,9 @@ class ActivityClassBuilder(private val activityClass: ActivityClass) {
         InjectMethodBuilder(activityClass).build(typeBuilder)
         SaveStateMethodBuilder(activityClass).build(typeBuilder)
         if (activityClass.isKotlin) {
-            StartKotlinFunctionBuilder(activityClass).build(FileSpec.builder(activityClass.packageName, activityClass.simpleName + POSIX))
+            val fileBuilder = FileSpec.builder(activityClass.packageName, activityClass.simpleName + POSIX)
+            StartKotlinFunctionBuilder(activityClass).build(fileBuilder)
+            writeKotlinToFile(filer, fileBuilder.build())
         }
         writeJavaToFile(filer, typeBuilder.build())
     }

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Narwhal</string>
+    <string name="go_to_user_activity">goToUserActivity</string>
+    <string name="go_to_parcelable_activity">goToParcelableActivity</string>
 </resources>

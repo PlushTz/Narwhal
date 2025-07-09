@@ -15,10 +15,12 @@ import com.eetrust.annotations.Optional
 @Builder
 class ParcelableActivity : AppCompatActivity() {
     @Optional
-    lateinit var user: User
+    var user: User? = null
+    @Optional(intValue = 123)
+    var createTime: Long? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        ParcelableActivityBuilder.inject(this, savedInstanceState)
         Log.d("TAG", "$user")
+        Log.d("TAG", "$createTime")
     }
 }
